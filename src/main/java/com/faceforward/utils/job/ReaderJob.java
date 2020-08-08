@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 @Slf4j
 @Component
 public class ReaderJob {
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @Autowired
     ExcelService excelService;
@@ -23,7 +27,7 @@ public class ReaderJob {
 
 
     @Scheduled(fixedRate = 5000)
-    public void reportCurrentTime() {
+    public void doJob() {
         excelService.printAllExcel(pathXsl);
         try {
             List<String> values = excelService.getValuesFromColumn(columnName, pathXsl);
