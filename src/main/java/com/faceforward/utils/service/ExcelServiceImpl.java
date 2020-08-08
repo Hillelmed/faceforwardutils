@@ -1,5 +1,6 @@
 package com.faceforward.utils.service;
 
+import com.faceforward.utils.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -18,14 +19,14 @@ import java.util.List;
 public class ExcelServiceImpl implements ExcelService {
 
     @Override
-    public List<String> getValuesFromColumn(String columnName, String pathXls) throws Exception {
+    public List<String> getValuesFromColumn(String columnName, String pathXls) throws ApplicationException {
         try {
-            int indexList = -1;
+            Integer indexList = null;
             List<String> listValues = new ArrayList<>();
             HSSFSheet sheet = getSheetFromFile(new FileInputStream(pathXls));
             for (Row row : sheet) {
                 for (Cell cell : row) {
-                    if (indexList == -1) {
+                    if (indexList == null) {
                         if (cell.toString().equals(columnName)) {
                             indexList = cell.getColumnIndex();
                             break;
@@ -36,8 +37,8 @@ public class ExcelServiceImpl implements ExcelService {
                         }
                     }
                 }
-                if (indexList == -1) {
-                    throw new Exception("Not found column with name : " + columnName);
+                if (indexList == null) {
+                    throw new ApplicationException("Not found column with name : " + columnName);
                 }
             }
             if (!listValues.isEmpty()) {
@@ -45,9 +46,9 @@ public class ExcelServiceImpl implements ExcelService {
             }
         } catch (Exception e) {
             log.error(Arrays.toString(e.getStackTrace()));
-            throw e;
+            throw new ApplicationException(e.getCause());
         }
-        throw new Exception("Error get list of values");
+        throw new ApplicationException("Error get list of values");
     }
 
     @Override
@@ -89,14 +90,14 @@ public class ExcelServiceImpl implements ExcelService {
         }
     }
 
-    private HSSFSheet getSheetFromFile(FileInputStream fileInputStream) throws Exception {
+    private HSSFSheet getSheetFromFile(FileInputStream fileInputStream) throws ApplicationException {
         try {
             HSSFWorkbook wb = new HSSFWorkbook(fileInputStream);
             return wb.getSheetAt(0);
         } catch (IOException e) {
             log.error(Arrays.toString(e.getStackTrace()));
         }
-        throw new Exception("Error with load xls file");
+        throw new ApplicationException("Error with load xls file");
     }
 
     private Object getValueFromCell(Cell cell) {
