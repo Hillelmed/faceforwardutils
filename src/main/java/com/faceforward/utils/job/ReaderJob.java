@@ -3,6 +3,7 @@ package com.faceforward.utils.job;
 import com.faceforward.utils.service.ExcelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +16,17 @@ public class ReaderJob {
     @Autowired
     ExcelService excelService;
 
+    @Value("${columnName}")
+    String columnName;
+    @Value("${pathXsl}")
+    String pathXsl;
+
 
     @Scheduled(fixedRate = 5000)
     public void reportCurrentTime() {
-        excelService.printAllExcel("D:\\git\\faceforwarddata\\Employee_attendance_record.xls");
+        excelService.printAllExcel(pathXsl);
         try {
-            List<String> values = excelService.getValuesFromColumn("Employee ID", "D:\\git\\faceforwarddata\\Employee_attendance_record.xls");
+            List<String> values = excelService.getValuesFromColumn(columnName, pathXsl);
             values.forEach(System.out::println);
         } catch (Exception e) {
             e.printStackTrace();

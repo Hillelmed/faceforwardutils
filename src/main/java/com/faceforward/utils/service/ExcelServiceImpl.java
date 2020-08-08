@@ -6,7 +6,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-@Controller
+@Service
 public class ExcelServiceImpl implements ExcelService {
 
     @Override
