@@ -22,7 +22,7 @@ public class ReaderJob {
     public void reportCurrentTime() {
         excelService.printAllExcel("D:\\git\\faceforwarddata\\Employee_attendance_record.xls");
         try {
-            List<String> values = excelService.getValuesFromColumn("Employee aaID", "D:\\git\\faceforwarddata\\Employee_attendance_record.xls");
+            List<String> values = excelService.getValuesFromColumn("Employee ID", "D:\\git\\faceforwarddata\\Employee_attendance_record.xls");
             values.forEach(System.out::println);
         } catch (Exception e) {
             e.printStackTrace();
