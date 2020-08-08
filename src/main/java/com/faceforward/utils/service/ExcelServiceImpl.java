@@ -25,30 +25,21 @@ public class ExcelServiceImpl implements ExcelService {
             List<String> listValues = new ArrayList<>();
             HSSFSheet sheet = getSheetFromFile(new FileInputStream(pathXls));
             for (Row row : sheet) {
-                for (Cell cell : row) {
-                    if (indexList == null) {
-                        if (cell.toString().equals(columnName)) {
-                            indexList = cell.getColumnIndex();
-                            break;
-                        }
-                    } else {
+                if (row.getRowNum() == 0) {
+                    indexList = getIndexNumberByColumnName(row, columnName);
+                } else {
+                    for (Cell cell : row) {
                         if (cell.getColumnIndex() == indexList) {
                             listValues.add((String) getValueFromCell(cell));
                         }
                     }
                 }
-                if (indexList == null) {
-                    throw new ApplicationException("Not found column with name : " + columnName);
-                }
             }
-            if (!listValues.isEmpty()) {
-                return listValues;
-            }
+            return listValues.isEmpty() ? null : listValues;
         } catch (Exception e) {
             log.error(Arrays.toString(e.getStackTrace()));
             throw new ApplicationException(e.getCause());
         }
-        throw new ApplicationException("Error get list of values");
     }
 
     @Override
@@ -119,6 +110,18 @@ public class ExcelServiceImpl implements ExcelService {
                 break;
         }
         return null;
+    }
+
+    private Integer getIndexNumberByColumnName(Row row, String columnName) throws ApplicationException {
+        Integer indexList = null;
+        for (Cell cell : row) {
+            if (cell.toString().equals(columnName)) {
+                indexList = cell.getColumnIndex();
+                break;
+            }
+        }
+        if (indexList == null) throw new ApplicationException("not found column with name : " + columnName);
+        else return indexList;
     }
 
 
